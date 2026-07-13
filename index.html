@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MarginPilot | Landed Cost & Reorder Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MARGINPILOT</p>
+        <h1>Know which SKUs actually make money.</h1>
+        <p class="lede">A local-first calculator for landed cost, contribution profit, break-even pricing, and reorder timing.</p>
+      </div>
+      <button id="resetButton" class="button button-quiet" type="button">Reset</button>
+    </header>
+
+    <section class="workspace">
+      <form id="calculator" class="panel inputs-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">SKU INPUT</p>
+            <h2>Product economics</h2>
+          </div>
+          <span class="local-badge">Local only</span>
+        </div>
+        <div class="field-grid">
+          <label>Product name<input id="productName" value="Example product" required></label>
+          <label>Selling price<input id="price" type="number" min="0" step="0.01" value="39.90"></label>
+          <label>Product cost<input id="productCost" type="number" min="0" step="0.01" value="12.00"></label>
+          <label>Inbound shipping per unit<input id="inboundShipping" type="number" min="0" step="0.01" value="1.80"></label>
+          <label>Packaging per unit<input id="packaging" type="number" min="0" step="0.01" value="0.60"></label>
+          <label>Outbound shipping per order<input id="outboundShipping" type="number" min="0" step="0.01" value="4.50"></label>
+          <label>Platform fee %<input id="platformFee" type="number" min="0" max="100" step="0.1" value="5"></label>
+          <label>Payment fee %<input id="paymentFee" type="number" min="0" max="100" step="0.1" value="2.9"></label>
+          <label>Payment fixed fee<input id="paymentFixed" type="number" min="0" step="0.01" value="0.30"></label>
+          <label>Discount %<input id="discount" type="number" min="0" max="100" step="0.1" value="10"></label>
+          <label>Ad cost per order<input id="adCost" type="number" min="0" step="0.01" value="3.00"></label>
+          <label>Return rate %<input id="returnRate" type="number" min="0" max="100" step="0.1" value="4"></label>
+          <label>Units sold per day<input id="dailySales" type="number" min="0" step="0.1" value="4"></label>
+          <label>Current inventory<input id="inventory" type="number" min="0" step="1" value="86"></label>
+          <label>Supplier lead time (days)<input id="leadTime" type="number" min="0" step="1" value="18"></label>
+          <label>Safety stock (days)<input id="safetyDays" type="number" min="0" step="1" value="7"></label>
+        </div>
+        <div class="form-footer">
+          <label class="select-label">Currency<select id="currency"><option value="$">USD ($)</option><option value="CNY ">CNY (CNY)</option><option value="EUR ">EUR (EUR)</option><option value="GBP ">GBP (GBP)</option></select></label>
+          <button class="button button-primary" type="submit">Calculate economics</button>
+        </div>
+        <div class="data-tools">
+          <div>
+            <p class="eyebrow">BATCH MODE</p>
+            <p class="tool-copy">Import a CSV with one row per SKU. Your file stays in this browser.</p>
+          </div>
+          <div class="tool-actions">
+            <label class="button button-quiet file-button">Import CSV<input id="csvInput" type="file" accept=".csv,text/csv"></label>
+            <a class="button button-quiet sample-link" href="sample-products.csv" download>Sample CSV</a>
+            <button id="downloadButton" class="button button-quiet" type="button">Export result</button>
+          </div>
+        </div>
+        <p id="csvStatus" class="csv-status" role="status"></p>
+      </form>
+
+      <section class="results" aria-live="polite">
+        <div class="result-hero">
+          <div>
+            <p class="eyebrow">DECISION SNAPSHOT</p>
+            <h2 id="resultTitle">Example product</h2>
+          </div>
+          <span id="healthBadge" class="health-badge">Healthy margin</span>
+        </div>
+        <div class="metric-grid">
+          <article class="metric-card metric-main"><span>Contribution profit</span><strong id="profitValue">$9.44</strong><small>per order after listed costs</small></article>
+          <article class="metric-card"><span>True margin</span><strong id="marginValue">26.3%</strong><small>after discount, fees, ads, returns</small></article>
+          <article class="metric-card"><span>Landed cost</span><strong id="landedValue">$14.40</strong><small>product + inbound + packaging</small></article>
+          <article class="metric-card"><span>Break-even price</span><strong id="breakEvenValue">$25.20</strong><small>before fixed overhead</small></article>
+        </div>
+        <div class="decision-grid">
+          <article class="decision-card"><span class="decision-label">Inventory runway</span><strong id="runwayValue">21.5 days</strong><p id="runwayNote">Reorder before the lead-time window closes.</p></article>
+          <article class="decision-card"><span class="decision-label">Reorder point</span><strong id="reorderValue">100 units</strong><p id="reorderNote">Current stock is below the suggested buffer.</p></article>
+        </div>
+        <div class="breakdown panel">
+          <div class="panel-heading"><div><p class="eyebrow">COST WATERFALL</p><h2>Where the order value goes</h2></div></div>
+          <div id="breakdownRows" class="breakdown-rows"></div>
+        </div>
+        <section id="batchPanel" class="panel batch-panel" hidden>
+          <div class="panel-heading"><div><p class="eyebrow">BATCH REVIEW</p><h2>SKU ranking</h2></div><span id="batchCount" class="local-badge"></span></div>
+          <div class="table-wrap"><table><thead><tr><th>SKU</th><th>Margin</th><th>Profit</th><th>Action</th></tr></thead><tbody id="batchRows"></tbody></table></div>
+        </section>
+      </section>
+    </section>
+    <footer>MarginPilot runs in your browser. No account, store connection, or product data upload.</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
