@@ -1,0 +1,4 @@
+name,price,product_cost,inbound_shipping,packaging,outbound_shipping,platform_fee,payment_fee,payment_fixed,discount,ad_cost,return_rate
+Canvas travel organizer,39.90,12.00,1.80,0.60,4.50,5,2.9,0.30,10,3.00,4
+Desk cable tray,24.00,5.40,0.90,0.35,3.80,5,2.9,0.30,5,2.20,3
+Ceramic pour-over set,52.00,18.50,3.20,1.10,6.20,5,2.9,0.30,12,4.80,6
